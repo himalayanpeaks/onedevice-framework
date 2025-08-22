@@ -4,7 +4,7 @@ using OneDriver.Framework.ModuleBuilder;
 namespace OneDriver.Framework.Module.Parameter
 {
     public class BaseChannelParamPd<TChannelProcessData> : BaseChannelParam, IProcessData<TChannelProcessData>
-        where TChannelProcessData : IParameter
+        where TChannelProcessData : BaseProcessData
     {
         public BaseChannelParamPd(string name, TChannelProcessData processData) : base(name)
         {
