@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel;
 
-namespace OneDriver.Framework.Base
+namespace OneDriver.Framework.Base;
+
+public interface IParameter : INotifyPropertyChanged, IHasValidation
 {
-    public interface IParameter : INotifyPropertyChanged, IHasValidation
-    {
-    }
 }

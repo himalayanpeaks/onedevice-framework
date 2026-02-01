@@ -1,25 +1,21 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace OneDriver.Framework.Libs.Validator
+namespace OneDriver.Framework.Libs.Validator;
+
+public class ComportValidator : IValidator
 {
-    public class ComportValidator : IValidator
+    private static readonly Regex ComValidationRegex = new(@"^(COM\d+){1};?(\d+)?$", RegexOptions.Compiled);
+    public Regex ValidationRegex => ComValidationRegex;
+
+    public bool Validate(string inputString)
     {
-        private static readonly Regex _validationRegex = new Regex(@"^(COM\d+){1};?(\d+)?$", RegexOptions.Compiled);
-        public Regex ValidationRegex => _validationRegex;
+        if (string.IsNullOrEmpty(inputString)) return false;
 
-        public bool Validate(string inputString)
-        {
-            if (string.IsNullOrEmpty(inputString))
-            {
-                return false;
-            }
+        return ValidationRegex.IsMatch(inputString);
+    }
 
-            return _validationRegex.IsMatch(inputString);
-        }
-        public string GetExample()
-        {
-            return "COM23;19200";
-        }
+    public string GetExample()
+    {
+        return "COM23;19200";
     }
 }

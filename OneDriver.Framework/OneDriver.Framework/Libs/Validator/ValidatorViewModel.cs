@@ -1,97 +1,82 @@
-﻿using OneDriver.Framework.Base;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using OneDriver.Framework.Base;
 
-namespace OneDriver.Framework.Libs.Validator
+namespace OneDriver.Framework.Libs.Validator;
+
+public class ValidatorViewModel : PropertyHandlers, IParameter
 {
-    public class ValidatorViewModel : PropertyHandlers, IParameter
+    private bool _isValid;
+    private string? _userInput;
+    private IValidator? _validator;
+
+
+    public ValidatorViewModel(IValidator validator)
     {
-        private string _userInput;
-        private bool _isValid;
-        private IValidator _validator;
+        Validator = validator;
+        PropertyChanged += ValidatorViewModel_PropertyChanged;
+        PropertyChanging += ValidatorViewModel_PropertyChanging;
+        IsValid = false;
+        UserInput = Validator.GetExample();
+    }
 
 
-        public ValidatorViewModel(IValidator validator)
+    // The validator instance
+    public IValidator Validator
+    {
+        get => GetProperty(ref _validator) ?? throw new NullReferenceException();
+        set
         {
-            Validator = validator;
-            PropertyChanged += ValidatorViewModel_PropertyChanged;
-            PropertyChanging += ValidatorViewModel_PropertyChanging;
-            IsValid = false;
-            UserInput = Validator.GetExample();
-
+            SetProperty(ref _validator, value);
+            OnPropertyChanged(nameof(ExampleText));
         }
+    }
 
-        private void ValidatorViewModel_PropertyChanging(object sender, PropertyValidationEventArgs e)
+    // User input bound to the TextBox
+    public string? UserInput
+    {
+        get => GetProperty(ref _userInput);
+        set => SetProperty(ref _userInput, value);
+    }
+
+    // Validation result
+    public bool IsValid
+    {
+        get => GetProperty(ref _isValid);
+        private set => SetProperty(ref _isValid, value);
+    }
+
+    // Example text provided by the validator
+    public string ExampleText => Validator?.GetExample() ?? string.Empty;
+
+    private void ValidatorViewModel_PropertyChanging(object sender, PropertyValidationEventArgs e)
+    {
+        switch (e.PropertyName)
         {
-            switch (e.PropertyName)
-            {
-                case nameof(UserInput):
-                    string s = (string)e.NewValue;
-                    if (string.IsNullOrEmpty(s) || !Validator.Validate(s))
-                    {
-                        IsValid = false;
-                    }
-                    else
-                        IsValid = true;
-                    break;
-            }
+            case nameof(UserInput):
+                var s = (string)e.NewValue;
+                if (string.IsNullOrEmpty(s) || !Validator.Validate(s))
+                    IsValid = false;
+                else
+                    IsValid = true;
+                break;
         }
+    }
 
 
-
-        private void ValidatorViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    private void ValidatorViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        switch (e.PropertyName)
         {
-            switch (e.PropertyName)
-            {
-                case nameof(Validator):
-                    OnPropertyChanged(nameof(ExampleText));
-                    break;
-            }
-        }
-
-
-
-        // The validator instance
-        public IValidator Validator
-        {
-            get => GetProperty(ref _validator);
-            set
-            {
-                SetProperty(ref _validator, value);
+            case nameof(Validator):
                 OnPropertyChanged(nameof(ExampleText));
-            }
+                break;
         }
-
-        // User input bound to the TextBox
-        public string UserInput
-        {
-            get => GetProperty(ref _userInput);
-            set => SetProperty(ref _userInput, value);
-        }
-
-        // Validation result
-        public bool IsValid
-        {
-            get => GetProperty(ref _isValid);
-            private set => SetProperty(ref _isValid, value);
-        }
-
-        // Example text provided by the validator
-        public string ExampleText => Validator?.GetExample() ?? string.Empty;
+    }
 
 
-
-        // Validate the current input
-        private void ValidateInput()
-        {
-            if (Validator == null || string.IsNullOrEmpty(UserInput))
-            {
-                IsValid = false;
-            }
-            else
-            {
-                IsValid = Validator.Validate(UserInput);
-            }
-        }
-
+    // Validate the current input
+    private void ValidateInput()
+    {
+        IsValid = !string.IsNullOrEmpty(UserInput) && Validator.Validate(UserInput);
     }
 }
