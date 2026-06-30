@@ -17,7 +17,7 @@ jobs:
     runs-on: windows-2022
 
     env:
-      Solution_Name: OneDriver.Framework/OneDriver.Framework.sln
+      Solution_Name: OneDevice.Framework/OneDevice.Framework.sln
 
     steps:
       - name: Checkout repository
@@ -48,7 +48,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: OneDriver.Framework/OneDriver.Framework.sln
+      Solution_Name: OneDevice.Framework/OneDevice.Framework.sln
 
     steps:
       - uses: actions/checkout@v4
