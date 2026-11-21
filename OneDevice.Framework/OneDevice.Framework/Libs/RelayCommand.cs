@@ -2,6 +2,7 @@
 
 namespace OneDevice.Framework.Libs;
 
+[Obsolete("UI helper; will move out of the core framework in 3.0. Use CommunityToolkit.Mvvm.Input.RelayCommand instead.")]
 public class RelayCommand : ICommand
 {
     private readonly Predicate<object?>? _canExecute;

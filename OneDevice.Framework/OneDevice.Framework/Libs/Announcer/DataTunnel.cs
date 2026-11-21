@@ -17,6 +17,7 @@ namespace OneDevice.Framework.Libs.Announcer;
 ///         <see cref="DataEvent" /> and <see cref="AnnouncerError" /> are raised on the background thread.
 ///     </para>
 /// </remarks>
+[Obsolete("Use OneDevice.Framework.Streaming.PollingDataSource<T> (composition instead of inheritance, async stream, ILogger). Will be removed in 3.0.")]
 public abstract class DataTunnel<TEventArgs> where TEventArgs : BaseDataForAnnouncement, new()
 {
     public delegate void DataEventHandler(object sender, TEventArgs e);

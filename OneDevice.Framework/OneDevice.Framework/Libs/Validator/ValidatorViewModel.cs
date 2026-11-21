@@ -3,6 +3,7 @@ using System.ComponentModel;
 
 namespace OneDevice.Framework.Libs.Validator;
 
+[Obsolete("UI helper; will move out of the core framework in 3.0. Use CommunityToolkit.Mvvm (ObservableValidator) instead.")]
 public class ValidatorViewModel : PropertyHandlers, IParameter
 {
     private bool _isValid;
