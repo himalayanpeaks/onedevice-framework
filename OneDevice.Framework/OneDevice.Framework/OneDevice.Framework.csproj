@@ -5,6 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<PackageIcon>icon.png</PackageIcon>
+    <!-- Fails `dotnet pack` if the public API breaks compared to the last released version.
+         Bump the baseline after each release; remove it only for an intentional major version. -->
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <PackageValidationBaselineVersion>2.3.0</PackageValidationBaselineVersion>
   </PropertyGroup>
 
   <ItemGroup>

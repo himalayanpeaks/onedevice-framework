@@ -9,6 +9,12 @@ public class PropertyHandlers
     public event PropertyChangedEventHandler? PropertyChanged;
     public event PropertyValidationEventHandler? PropertyChanging;
 
+    /// <summary>
+    ///     Raised when a <see cref="PropertyChanging" /> handler rejected a new value (by throwing).
+    ///     The property keeps its previous value; this event makes the rejection observable to callers and UIs.
+    /// </summary>
+    public event EventHandler<PropertyValidationFailedEventArgs>? PropertyValidationFailed;
+
     protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -36,7 +42,9 @@ public class PropertyHandlers
         }
 
         if (e.Value != null) return (T)e.Value;
-        throw new NullReferenceException();
+        throw new InvalidOperationException(
+            $"No value was supplied for property '{propertyName}'. " +
+            $"Attach a {nameof(PropertyReadRequested)} handler that sets {nameof(PropertyReadRequestedEventArgs)}.{nameof(PropertyReadRequestedEventArgs.Value)}.");
     }
 
     public event PropertyReadRequestedEventHandler? PropertyReadRequested;
@@ -56,8 +64,11 @@ public class PropertyHandlers
         }
         catch (Exception ex)
         {
-            // Log the exception or handle it as needed
+            // The value is rejected and the field keeps its previous value (existing behaviour).
+            // Make the rejection observable instead of only logging it.
             Log.Error($"Validation failed for property '{propertyName}': {ex.Message}");
+            PropertyValidationFailed?.Invoke(this,
+                new PropertyValidationFailedEventArgs(propertyName ?? string.Empty, value, ex));
             return false; // Prevent field update
         }
 
