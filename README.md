@@ -1,7 +1,7 @@
-# OneDriver
-OneDriver Framework
+# OneDevice
+OneDevice Framework
 
-OneDriver Framework is a universal, extensible, and lightweight framework designed for rapid development of device-specific drivers. It provides a structured approach with predefined interfaces, base classes, and common utilities that significantly simplify integrating and communicating with various hardware devices.
+OneDevice Framework is a universal, extensible, and lightweight framework designed for rapid development of device-specific drivers. It provides a structured approach with predefined interfaces, base classes, and common utilities that significantly simplify integrating and communicating with various hardware devices.
 
 Features
 
