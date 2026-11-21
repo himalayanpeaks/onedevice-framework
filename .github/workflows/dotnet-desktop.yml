@@ -91,8 +91,13 @@ jobs:
       - name: Push to nuget.org
         shell: pwsh
         run: |
-          Get-ChildItem ./packages/*.nupkg | ForEach-Object { Write-Host "Publishing $($_.Name)" }
-          dotnet nuget push "./packages/*.nupkg" `
-            --source https://api.nuget.org/v3/index.json `
-            --api-key ${{ secrets.NUGET_API_KEY }} `
-            --skip-duplicate
+          $packages = Get-ChildItem ./packages -Filter *.nupkg
+          if (-not $packages) { throw "No packages found to publish" }
+          foreach ($pkg in $packages) {
+              Write-Host "Publishing $($pkg.Name)"
+              dotnet nuget push $pkg.FullName `
+                --source https://api.nuget.org/v3/index.json `
+                --api-key ${{ secrets.NUGET_API_KEY }} `
+                --skip-duplicate
+              if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
